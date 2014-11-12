@@ -84,7 +84,8 @@
 	PushNotification *pushHandler = [delegate.viewController getCommandInstance:@"PushNotification"];
 	if(pushHandler.startPushData) {
 		NSString *jsStatement = [NSString stringWithFormat:@"window.plugins.pushNotification.notificationCallback(%@);", pushHandler.startPushData];
-		[pushHandler writeJavascript:WRITEJS(jsStatement)];
+		[self.commandDelegate evalJs:WRITEJS(jsStatement)];
+		
 		pushHandler.startPushData = nil;
 	}
 
@@ -93,6 +94,11 @@
 
 - (void)registerDevice:(CDVInvokedUrlCommand*)command {
 	[self.callbackIds setValue:command.callbackId forKey:@"registerDevice"];
+
+	CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_NO_RESULT messageAsDictionary:nil];
+	[pluginResult setKeepCallbackAsBool:YES];
+	[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+	
 	[[PushNotificationManager pushManager] registerForPushNotifications];
 
 }
@@ -101,46 +107,49 @@
 	[[PushNotificationManager pushManager] unregisterForPushNotifications];
 	
 	CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:nil];
-	[self writeJavascript:WRITEJS([pluginResult toSuccessCallbackString:command.callbackId])];
+	[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 - (void)startBeaconPushes:(CDVInvokedUrlCommand*)command {
 	[[PushNotificationManager pushManager] startBeaconTracking];
 	
 	CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:nil];
-	[self writeJavascript:WRITEJS([pluginResult toSuccessCallbackString:command.callbackId])];
+	[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 - (void)stopBeaconPushes:(CDVInvokedUrlCommand*)command {
 	[[PushNotificationManager pushManager] stopBeaconTracking];
 	
 	CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:nil];
-	[self writeJavascript:WRITEJS([pluginResult toSuccessCallbackString:command.callbackId])];
+	[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 - (void)setTags:(CDVInvokedUrlCommand*)command {
 	[[PushNotificationManager pushManager] setTags:[command.arguments objectAtIndex:0]];
 	
 	CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:nil];
-	[self writeJavascript:WRITEJS([pluginResult toSuccessCallbackString:command.callbackId])];
-
+	[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 - (void)getTags:(CDVInvokedUrlCommand*)command {
 	// The first argument in the arguments parameter is the callbackID.
 	[self.callbackIds setValue:command.callbackId forKey:@"getTags"];
 	
+	CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_NO_RESULT messageAsDictionary:nil];
+	[pluginResult setKeepCallbackAsBool:YES];
+	[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+	
 	[[PushNotificationManager pushManager] loadTags:
 		^(NSDictionary *tags) {
-			 CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:tags];
-			 [self writeJavascript:WRITEJS([pluginResult toSuccessCallbackString:[self.callbackIds valueForKey:@"getTags"]])];
+			CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:tags];
+			[self.commandDelegate sendPluginResult:pluginResult callbackId:[self.callbackIds valueForKey:@"getTags"]];
 		}
 		error:^(NSError *error) {
-			 NSMutableDictionary *results = [NSMutableDictionary dictionary];
-			 [results setValue:[NSString stringWithFormat:@"%@", error] forKey:@"error"];
+			NSMutableDictionary *results = [NSMutableDictionary dictionary];
+			[results setValue:[NSString stringWithFormat:@"%@", error] forKey:@"error"];
 
-			 CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:results];
-			 [self writeJavascript:WRITEJS([pluginResult toErrorCallbackString:[self.callbackIds valueForKey:@"getTags"]])];
+			CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:results];
+			[self.commandDelegate sendPluginResult:pluginResult callbackId:[self.callbackIds valueForKey:@"getTags"]];
 		 }
 	 ];
 }
@@ -153,8 +162,7 @@
 	[[PushNotificationManager pushManager] sendLocation:location];
 	
 	CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:nil];
-	[self writeJavascript:WRITEJS([pluginResult toSuccessCallbackString:command.callbackId])];
-	
+	[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 - (void)startLocationTracking:(CDVInvokedUrlCommand*)command {
@@ -162,16 +170,14 @@
 	[[PushNotificationManager pushManager] startLocationTracking];
 	
 	CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:nil];
-	[self writeJavascript:WRITEJS([pluginResult toSuccessCallbackString:command.callbackId])];
-	
+	[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 - (void)stopLocationTracking:(CDVInvokedUrlCommand*)command {
 	[[PushNotificationManager pushManager] stopLocationTracking];
 	
 	CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:nil];
-	[self writeJavascript:WRITEJS([pluginResult toSuccessCallbackString:command.callbackId])];
-	
+	[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 - (void)onDidRegisterForRemoteNotificationsWithDeviceToken:(NSString *)token {
@@ -180,7 +186,7 @@
     [results setValue:token forKey:@"deviceToken"];
 
 	CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:results];
-	[self writeJavascript:WRITEJS([pluginResult toSuccessCallbackString:[self.callbackIds valueForKey:@"registerDevice"]])];
+	[self.commandDelegate sendPluginResult:pluginResult callbackId:[self.callbackIds valueForKey:@"registerDevice"]];
 }
 
 - (void)onDidFailToRegisterForRemoteNotificationsWithError:(NSError*)error {
@@ -189,7 +195,7 @@
 	[results setValue:[NSString stringWithFormat:@"%@", error] forKey:@"error"];
 
 	CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:results];
-	[self writeJavascript:WRITEJS([pluginResult toErrorCallbackString:[self.callbackIds valueForKey:@"registerDevice"]])];
+	[self.commandDelegate sendPluginResult:pluginResult callbackId:[self.callbackIds valueForKey:@"registerDevice"]];
 }
 
 
@@ -227,67 +233,66 @@
 	else {
 		//send it to the webview
 		NSString *jsStatement = [NSString stringWithFormat:@"window.plugins.pushNotification.notificationCallback(%@);", jsonString];
-		[self writeJavascript:WRITEJS(jsStatement)];
+		[self.commandDelegate evalJs:WRITEJS(jsStatement)];
 	}
 }
 
-+ (NSMutableDictionary*)getRemoteNotificationStatus {
-
++ (NSMutableDictionary *)getRemoteNotificationStatus {
     NSMutableDictionary *results = [NSMutableDictionary dictionary];
-
-    NSUInteger type = 0;
+	
+	NSInteger type = 0;
     // Set the defaults to disabled unless we find otherwise...
     NSString *pushBadge = @"0";
     NSString *pushAlert = @"0";
     NSString *pushSound = @"0";
-
-#if !TARGET_IPHONE_SIMULATOR
-
+    NSString *pushEnabled = @"0";
+    
     // Check what Notifications the user has turned on.  We registered for all three, but they may have manually disabled some or all of them.
-    type = [[UIApplication sharedApplication] enabledRemoteNotificationTypes];
+	
+#ifdef __IPHONE_8_0
+	if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0)
+	{
+		if([[UIApplication sharedApplication] isRegisteredForRemoteNotifications])
+			pushEnabled = @"1";
 
-    // Check what Registered Types are turned on. This is a bit tricky since if two are enabled, and one is off, it will return a number 2... not telling you which
-    // one is actually disabled. So we are literally checking to see if rnTypes matches what is turned on, instead of by number. The "tricky" part is that the
-    // single notification types will only match if they are the ONLY one enabled.  Likewise, when we are checking for a pair of notifications, it will only be
-    // true if those two notifications are on.  This is why the code is written this way
-    if(type == UIRemoteNotificationTypeBadge){
-        pushBadge = @"1";
-    }
-    else if(type == UIRemoteNotificationTypeAlert) {
-        pushAlert = @"1";
-    }
-    else if(type == UIRemoteNotificationTypeSound) {
-        pushSound = @"1";
-    }
-    else if(type == ( UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert)) {
-        pushBadge = @"1";
-        pushAlert = @"1";
-    }
-    else if(type == ( UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound)) {
-        pushBadge = @"1";
-        pushSound = @"1";
-    }
-    else if(type == ( UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound)) {
-        pushAlert = @"1";
-        pushSound = @"1";
-    }
-    else if(type == ( UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound)) {
-        pushBadge = @"1";
-        pushAlert = @"1";
-        pushSound = @"1";
-    }
-
+		UIUserNotificationSettings * settings = [[UIApplication sharedApplication] currentUserNotificationSettings];
+		type = settings.types;
+		if(type & UIUserNotificationTypeBadge){
+			pushBadge = @"1";
+		}
+		if(type & UIUserNotificationTypeAlert) {
+			pushAlert = @"1";
+		}
+		if(type & UIUserNotificationTypeSound) {
+			pushSound = @"1";
+		}
+	}
+	else
 #endif
+	{
+		type = [[UIApplication sharedApplication] enabledRemoteNotificationTypes];
+		if(type & UIRemoteNotificationTypeBadge){
+			pushBadge = @"1";
+		}
+		if(type & UIRemoteNotificationTypeAlert) {
+			pushAlert = @"1";
+		}
+		if(type & UIRemoteNotificationTypeSound) {
+			pushSound = @"1";
+		}
 
+		if(type != UIRemoteNotificationTypeNone)
+			pushEnabled = @"1";
+	}
+	
     // Affect results
-    [results setValue:[NSString stringWithFormat:@"%d", type] forKey:@"type"];
-	[results setValue:[NSString stringWithFormat:@"%d", type != UIRemoteNotificationTypeNone] forKey:@"enabled"];
+    [results setValue:[NSString stringWithFormat:@"%d", (int)type] forKey:@"type"];
+    [results setValue:pushEnabled forKey:@"enabled"];
     [results setValue:pushBadge forKey:@"pushBadge"];
     [results setValue:pushAlert forKey:@"pushAlert"];
     [results setValue:pushSound forKey:@"pushSound"];
-
+    
     return results;
-
 }
 
 - (void)getRemoteNotificationStatus:(CDVInvokedUrlCommand*)command {
@@ -295,7 +300,7 @@
 	NSMutableDictionary *results = [PushNotification getRemoteNotificationStatus];
 
 	CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:results];
-	[self writeJavascript:WRITEJS([pluginResult toSuccessCallbackString:command.callbackId])];
+	[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 - (void)setApplicationIconBadgeNumber:(CDVInvokedUrlCommand*)command {
@@ -308,7 +313,7 @@
     [results setValue:[NSNumber numberWithInt:1] forKey:@"success"];
 
 	CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:results];
-	[self writeJavascript:WRITEJS([pluginResult toSuccessCallbackString:command.callbackId])];
+	[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 - (void)cancelAllLocalNotifications:(CDVInvokedUrlCommand*)command {
@@ -316,7 +321,7 @@
 	[[UIApplication sharedApplication] cancelAllLocalNotifications];
 	
 	CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-	[self writeJavascript:WRITEJS([pluginResult toSuccessCallbackString:command.callbackId])];
+	[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 - (void) dealloc {

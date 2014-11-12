@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android"
     id="com.pushwoosh.plugins.pushwoosh"
-    version="3.3.0">
+    version="3.4.0">
 
     <name>Pushwoosh</name>
 
@@ -99,12 +99,19 @@
          -->
         <service android:name="com.arellomobile.android.push.PushGCMIntentService"/>
 
-            <!--
-              Service for sending location updates
-            -->
-            <service android:name="com.arellomobile.android.push.GeoLocationService"/>
+        <!--
+          Service for sending location updates
+        -->
+        <service android:name="com.arellomobile.android.push.GeoLocationService"/>
 
-            <receiver android:name="com.arellomobile.android.push.AlarmReceiver"></receiver>
+        <receiver android:name="com.arellomobile.android.push.AlarmReceiver"></receiver>
+
+        <receiver android:name="com.arellomobile.android.push.PackageRemoveReceiver">
+          <intent-filter>
+            <action android:name="android.intent.action.PACKAGE_REMOVED"/> 
+            <data android:scheme="package" />
+          </intent-filter>
+        </receiver>
 
       </config-file>
 
@@ -117,7 +124,167 @@
       <source-file src="src/android/src/com/pushwoosh/plugin/pushnotifications/PushNotifications.java"
               target-dir="src/com/pushwoosh/plugin/pushnotifications" />
 
-      <source-file src="src/android/lib/Pushwoosh.jar" target-dir="libs" />
+      <source-file src="src/android/src/com/pushwoosh/support/v4/app/LocalBroadcastManager.java"
+              target-dir="src/com/pushwoosh/support/v4/app/" />
+
+      <source-file src="src/android/src/com/pushwoosh/support/v4/app/NotificationCompat.java"
+              target-dir="src/com/pushwoosh/support/v4/app/" />
+
+      <source-file src="src/android/src/com/pushwoosh/support/v4/app/NotificationCompatHoneycomb.java"
+              target-dir="src/com/pushwoosh/support/v4/app/" />
+
+      <source-file src="src/android/src/com/pushwoosh/support/v4/app/NotificationCompatIceCreamSandwich.java"
+              target-dir="src/com/pushwoosh/support/v4/app/" />
+
+      <source-file src="src/android/src/com/pushwoosh/support/v4/app/NotificationCompatJellybean.java"
+              target-dir="src/com/pushwoosh/support/v4/app/" />
+
+      <source-file src="src/android/src/com/google/android/gcm/GCMBaseIntentService.java"
+              target-dir="src/com/google/android/gcm" />
+
+      <source-file src="src/android/src/com/google/android/gcm/GCMBroadcastReceiver.java"
+              target-dir="src/com/google/android/gcm" />
+
+      <source-file src="src/android/src/com/google/android/gcm/GCMConstants.java"
+              target-dir="src/com/google/android/gcm" />
+
+      <source-file src="src/android/src/com/google/android/gcm/GCMRegistrar.java"
+              target-dir="src/com/google/android/gcm" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/AlarmReceiver.java"
+              target-dir="src/com/arellomobile/android/push" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/BasePushMessageReceiver.java"
+              target-dir="src/com/arellomobile/android/push" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/DeviceFeature2_5.java"
+              target-dir="src/com/arellomobile/android/push" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/DeviceRegistrar.java"
+              target-dir="src/com/arellomobile/android/push" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/GeoLocationService.java"
+              target-dir="src/com/arellomobile/android/push" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/MessageActivity.java"
+              target-dir="src/com/arellomobile/android/push" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/PackageRemoveReceiver.java"
+              target-dir="src/com/arellomobile/android/push" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/PushEventsTransmitter.java"
+              target-dir="src/com/arellomobile/android/push" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/PushGCMIntentService.java"
+              target-dir="src/com/arellomobile/android/push" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/PushHandlerActivity.java"
+              target-dir="src/com/arellomobile/android/push" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/PushManager.java"
+              target-dir="src/com/arellomobile/android/push" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/PushServiceHelper.java"
+              target-dir="src/com/arellomobile/android/push" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/PushWebview.java"
+              target-dir="src/com/arellomobile/android/push" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/SendPushTagsCallBack.java"
+              target-dir="src/com/arellomobile/android/push" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/data/PushZoneLocation.java"
+              target-dir="src/com/arellomobile/android/push/data" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/preference/SoundType.java"
+              target-dir="src/com/arellomobile/android/push/preference" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/preference/VibrateType.java"
+              target-dir="src/com/arellomobile/android/push/preference" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/registrar/PushRegistrar.java"
+              target-dir="src/com/arellomobile/android/push/registrar" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/registrar/PushRegistrarGCM.java"
+              target-dir="src/com/arellomobile/android/push/registrar" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/request/ApplicationEventRequest.java"
+              target-dir="src/com/arellomobile/android/push/request" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/request/AppOpenRequest.java"
+              target-dir="src/com/arellomobile/android/push/request" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/request/AppRemovedRequest.java"
+              target-dir="src/com/arellomobile/android/push/request" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/request/GetBeaconsRequest.java"
+              target-dir="src/com/arellomobile/android/push/request" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/request/GetNearestZoneRequest.java"
+              target-dir="src/com/arellomobile/android/push/request" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/request/GetTagsRequest.java"
+              target-dir="src/com/arellomobile/android/push/request" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/request/MessageDeliveredRequest.java"
+              target-dir="src/com/arellomobile/android/push/request" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/request/ProcessBeaconRequest.java"
+              target-dir="src/com/arellomobile/android/push/request" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/request/PushRequest.java"
+              target-dir="src/com/arellomobile/android/push/request" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/request/PushStatRequest.java"
+              target-dir="src/com/arellomobile/android/push/request" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/request/RegisterDeviceRequest.java"
+              target-dir="src/com/arellomobile/android/push/request" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/request/RequestManager.java"
+              target-dir="src/com/arellomobile/android/push/request" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/request/SetTagsRequest.java"
+              target-dir="src/com/arellomobile/android/push/request" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/request/TrackInAppRequest.java"
+              target-dir="src/com/arellomobile/android/push/request" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/request/UnregisterDeviceRequest.java"
+              target-dir="src/com/arellomobile/android/push/request" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/utils/executor/ExecutorHelper.java"
+              target-dir="src/com/arellomobile/android/push/utils/executor" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/utils/executor/V11ExecutorHelper.java"
+              target-dir="src/com/arellomobile/android/push/utils/executor" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/utils/notification/BannerNotificationFactory.java"
+              target-dir="src/com/arellomobile/android/push/utils/notification" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/utils/notification/BaseNotificationFactory.java"
+              target-dir="src/com/arellomobile/android/push/utils/notification" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/utils/notification/Helper.java"
+              target-dir="src/com/arellomobile/android/push/utils/notification" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/utils/notification/SimpleNotificationFactory.java"
+              target-dir="src/com/arellomobile/android/push/utils/notification" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/utils/GeneralUtils.java"
+              target-dir="src/com/arellomobile/android/push/utils" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/utils/JsonUtils.java"
+              target-dir="src/com/arellomobile/android/push/utils" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/utils/PreferenceUtils.java"
+              target-dir="src/com/arellomobile/android/push/utils" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/utils/RegisterBroadcastReceiver.java"
+              target-dir="src/com/arellomobile/android/push/utils" />
+
+      <source-file src="src/android/src/com/arellomobile/android/push/utils/WorkerTask.java"
+              target-dir="src/com/arellomobile/android/push/utils" />
     </platform>
 
     <!-- ios -->
@@ -136,32 +303,73 @@
 
       <header-file src="src/ios/PushNotification.h" target-dir="ios"/>
       <source-file src="src/ios/PushNotification.m" target-dir="ios"/>
-      <header-file src="src/ios/Pushwoosh.framework/Versions/A/Headers/PushNotificationManager.h" target-dir="ios"/>
-      <source-file src="src/ios/Pushwoosh.framework/Versions/A/Pushwoosh" framework="true"/>
+
+      <header-file src="src/ios/Classes/Constants.h" target-dir="ios"/>
+
+      <header-file src="src/ios/Classes/PushNotificationManager.h" target-dir="ios"/>
+      <source-file src="src/ios/Classes/PushNotificationManager.m" target-dir="ios"/>
+
+      <header-file src="src/ios/Classes/PushRuntime.h" target-dir="ios"/>
+      <source-file src="src/ios/Classes/PushRuntime.m" target-dir="ios"/>
+
+      <header-file src="src/ios/Classes/PWApplicationEventRequest.h" target-dir="ios"/>
+      <source-file src="src/ios/Classes/PWApplicationEventRequest.m" target-dir="ios"/>
+
+      <header-file src="src/ios/Classes/PWAppOpenRequest.h" target-dir="ios"/>
+      <source-file src="src/ios/Classes/PWAppOpenRequest.m" target-dir="ios"/>
+
+      <header-file src="src/ios/Classes/PWBaseTracker.h" target-dir="ios"/>
+      <source-file src="src/ios/Classes/PWBaseTracker.m" target-dir="ios"/>
+
+      <header-file src="src/ios/Classes/PWBeacon.h" target-dir="ios"/>
+      <source-file src="src/ios/Classes/PWBeacon.m" target-dir="ios"/>
+
+      <header-file src="src/ios/Classes/PWBeaconsTracker.h" target-dir="ios"/>
+      <source-file src="src/ios/Classes/PWBeaconsTracker.m" target-dir="ios"/>
+
+      <header-file src="src/ios/Classes/PWGeozone.h" target-dir="ios"/>
+      <source-file src="src/ios/Classes/PWGeozone.m" target-dir="ios"/>
+
+      <header-file src="src/ios/Classes/PWGetBeaconsRequest.h" target-dir="ios"/>
+      <source-file src="src/ios/Classes/PWGetBeaconsRequest.m" target-dir="ios"/>
+
+      <header-file src="src/ios/Classes/PWGetNearestZoneRequest.h" target-dir="ios"/>
+      <source-file src="src/ios/Classes/PWGetNearestZoneRequest.m" target-dir="ios"/>
+
+      <header-file src="src/ios/Classes/PWGetTagsRequest.h" target-dir="ios"/>
+      <source-file src="src/ios/Classes/PWGetTagsRequest.m" target-dir="ios"/>
+
+      <header-file src="src/ios/Classes/PWHtmlWebViewController.h" target-dir="ios"/>
+      <source-file src="src/ios/Classes/PWHtmlWebViewController.m" target-dir="ios"/>
+
+      <header-file src="src/ios/Classes/PWLocationTracker.h" target-dir="ios"/>
+      <source-file src="src/ios/Classes/PWLocationTracker.m" target-dir="ios"/>
+
+      <header-file src="src/ios/Classes/PWProcessBeaconRequest.h" target-dir="ios"/>
+      <source-file src="src/ios/Classes/PWProcessBeaconRequest.m" target-dir="ios"/>
+
+      <header-file src="src/ios/Classes/PWPushStatRequest.h" target-dir="ios"/>
+      <source-file src="src/ios/Classes/PWPushStatRequest.m" target-dir="ios"/>
+
+      <header-file src="src/ios/Classes/PWRegisterDeviceRequest.h" target-dir="ios"/>
+      <source-file src="src/ios/Classes/PWRegisterDeviceRequest.m" target-dir="ios"/>
+
+      <header-file src="src/ios/Classes/PWRequest.h" target-dir="ios"/>
+      <source-file src="src/ios/Classes/PWRequest.m" target-dir="ios"/>
+
+      <header-file src="src/ios/Classes/PWRequestManager.h" target-dir="ios"/>
+      <source-file src="src/ios/Classes/PWRequestManager.m" target-dir="ios"/>
+
+      <header-file src="src/ios/Classes/PWSendBadgeRequest.h" target-dir="ios"/>
+      <source-file src="src/ios/Classes/PWSendBadgeRequest.m" target-dir="ios"/>
+
+      <header-file src="src/ios/Classes/PWSendPurchaseRequest.h" target-dir="ios"/>
+      <source-file src="src/ios/Classes/PWSendPurchaseRequest.m" target-dir="ios"/>
+
+      <header-file src="src/ios/Classes/PWSetTagsRequest.h" target-dir="ios"/>
+      <source-file src="src/ios/Classes/PWSetTagsRequest.m" target-dir="ios"/>
+
+      <header-file src="src/ios/Classes/PWUnregisterDeviceRequest.h" target-dir="ios"/>
+      <source-file src="src/ios/Classes/PWUnregisterDeviceRequest.m" target-dir="ios"/>
     </platform>
-
-  <!-- wp8 -->
-  <platform name="wp8">
-
-    <config-file target="config.xml" parent="/*">
-      <feature name="PushNotification">
-        <param name="wp-package" value="PushNotification"/>
-      </feature>
-    </config-file>
-
-    <config-file>
-      <access origin="*.pushwoosh.com" />
-    </config-file>
-
-    <config-file target="Properties/WMAppManifest.xml" parent="/Deployment/App/Capabilities">
-      <Capability Name="ID_CAP_PUSH_NOTIFICATION"/>
-      <Capability Name="ID_CAP_IDENTITY_DEVICE"/>
-      <Capability Name="ID_CAP_LOCATION"/>
-    </config-file>
-
-    <source-file src="src/wp8/PushNotification.cs" />
-
-    <framework src="src/wp8/PushSDK/Newtonsoft.Json.dll" custom="true" />
-    <framework src="src/wp8/PushSDK/PushSDK.dll" custom="true" />
-  </platform>
 </plugin>
