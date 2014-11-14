@@ -9,7 +9,7 @@
 // (c) Pushwoosh 2012
 //
 // MIT Licensed
-
+#import "Cordova/CDVViewController.h"
 #import "PushNotification.h"
 #import <CoreLocation/CoreLocation.h>
 #import "AppDelegate.h"
